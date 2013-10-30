@@ -1,7 +1,11 @@
 {
-  "name": "blockexplorer",
-  "version": "0.0.0",
-  "dependencies": {},
+  "name": "Fancy-Block-Explorer",
+  "version": "0.0.1",
+  "dependencies": {
+    "gzippo": "~0.2.0",
+    "express": "~3.4.4",
+    "grunt-google-cdn": "~0.2.2"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-copy": "~0.4.1",
@@ -39,9 +43,11 @@
     "karma-ng-html2js-preprocessor": "~0.1.0"
   },
   "engines": {
-    "node": ">=0.8.0"
+    "node": ">=0.8.0",
+    "npm": "1.2.x"
   },
   "scripts": {
     "test": "grunt test"
-  }
+  },
+  "author": "TrungNguyen"
 }
