@@ -1,9 +1,6 @@
 'use strict';
 
-angular.module('BlockExplorerApp', [
-  'ngCookies',
-  'ngResource',
-  'ngSanitize'
+var app = angular.module('BEApp', [
 ])
   .config(function ($routeProvider) {
     $routeProvider

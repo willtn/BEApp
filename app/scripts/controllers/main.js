@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('BlockExplorerApp')
+angular.module('BEApp')
   .controller('MainCtrl', function ($scope) {
     $scope.awesomeThings = [
       'HTML5 Boilerplate',
