@@ -8,6 +8,14 @@ var app = angular.module('BEApp', [
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
       })
+      .when('/block/:id',{
+        templateUrl: 'views/block.html',
+        controller: 'BlockCtrl'
+      })
+      .when('/block/transactions/:id', {
+        templateUrl: 'views/tx.html',
+        controller: 'TxCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
