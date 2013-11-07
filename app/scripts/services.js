@@ -3,70 +3,92 @@
 function Item(block) {
   this.selected = false;
 
-  angular.extend(this, entry);
+  angular.extend(this, block);
 }
 
-var CURRENT_HEIGHT_URL = 'http://blockchain.info/q/getblockcount',
-    services = angular.module('BEApp.services', []);
+var services = angular.module('BEApp.services', []);
 
 services.factory('items', ['$http', function($http) {
+  var BLOCK_COUNT_URL = 'http://blockchain.info/q/getblockcount',
+    LATEST_HASH_URL = 'http://blockchain.info/q/latesthash';
   var items = {
     all: [],
     filtered: [],
     selected: null,
     selectedIdx: null,
-    currentHeight: null,
+    prevHash: null,
 
-    getCurentBlockCount: function($http) {
-      return $http.get(CURRENT_HEIGHT_URL).
-        success(function(data, status) {
-          console.log(data, status);
-          return data;
-        }).
-        error(function(data, status) {
-          console.log(data, status);
-          return -1;
-        })
+
+    /*
+    Transform JSON response into Block then into Item
+     */
+    dataToItem: function(data) {
+      var block = {
+        hash: data.hash,
+        index: data.index,
+        prev_hash: data.prev_block,
+        bits: data.bits,
+        relayed_by: data.relayed_by,
+        n_tx: data.n_tx,
+        l_tx: {}
+      };
+
+      data.tx.forEach(function(tx) {
+        block.l_tx[tx.hash] = {
+          hash: tx.hash,
+          index: tx.index,
+          relayed_by: tx.relayed_by,
+          size: tx.size
+        };
+      })
+      return new Item(block);
     },
 
-    getLocalUrl: function(height) {
-      return '/json/blocks/' + height;
+    getLocalUrl: function(hash) {
+      return '/json/blocks/' + hash + '.json';
     },
 
     getItemFromLocalStore: function() {
-      if (!currentHeight) {
-        currentHeight = 200000;
+      if (!items.prevHash) {
+        items.prevHash = '0000000000000003c718e7ef998706e893b1e0e531784ee4ba66b677bbd278b7';
       }
 
       for (var i = 0; i < 10; ++i){
-        ($http.get(items.getLocalUrl(height - i)).then(function(response) {
-          var block = {
-            hash: response.hash,
-            index: response.block_index,
-            bits: response.bits,
-            height: response.height,
-            relayed_by: response.relayed_by,
-            n_tx: response.n_tx,
-            l_tx: {}
-          };
-
-          response.data.tx.forEach(function(tx){
-            block.l_tx[tx.hash] = {
-              hash: tx.hash,
-              index: tx.tx_index,
-              relayed_by: tx.relayed_by,
-              size: tx.size
-            };
-          });
-
-          items.all.push(block);
-        }));
+        $http.get(items.getLocalUrl(items.prevHash)).then(
+          function(data) {
+            items.all.push(items.dataToItem(data));
+            console.log(data.hash);
+           items.prevHash = data.prev_block;
+          },
+          function(data, status) {
+            console.log(data, status);
+            break;
+          }
+        );
       }
-      return
     },
 
-    getItemfromRemoteStore: function() {
+    /*
+    Get the URL to Block Request API
+     'http://blockchain.info/rawblock/$block_hash?format=json&cors=true'
+     */
+    getRemoteUrl: function(hash) {
+      return 'http://blockchain.info/rawblock/' + hash + '?format=json&cors=true';
+    },
 
+    get5ItemsfromRemoteStore: function() {
+
+    },
+
+    /*
+     Get the latest block from Blockchain
+     Assign the hash to prevHash
+     Flush Items
+     API Url: http://blockchain.info/latestblock?cors=true
+     */
+    refreshItems: function() {
+      $http.get(LATEST_HASH_URL).then(
+      );
     },
 
     prev: function() {
