@@ -11,11 +11,11 @@ angular.module('BEApp')
 
   .controller('BlockCtrl', function ($scope, $stateParams, items) {
     items.all.forEach(function(item) {
-      if (item.id === $stateParams.blockId) {
+      if (item.id == $stateParams.block_id) {
         $scope.block = item;
       }
     });
-    $scope.blockId = $stateParams.blockId;
+    $scope.block_id = $stateParams.block_id;
     $scope.tx = $scope.block.l_tx;
     $scope.showingId = null;
     $scope.showing = false;
@@ -35,8 +35,8 @@ angular.module('BEApp')
     $scope.tx = {
       id : 145698,
       size: 258,
-      relayed_by: '64.179.201.80'
-    };
+      relayed_by: "64.179.201.80"
+    }
   })
 
   .controller('AppController', function ($scope, items, scroll) {
@@ -53,8 +53,7 @@ angular.module('BEApp')
     };
 
     $scope.$watch('items.selectedIdx', function(newVal) {
-      if (newVal !== null)
-        scroll.toCurrent();
+      if (newVal !== null) scroll.toCurrent();
     });
   })
 
