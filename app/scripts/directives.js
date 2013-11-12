@@ -1,5 +1,3 @@
-'use strict';
-
 var directives = angular.module('BEApp.directives', []);
 
 directives.directive('keyDown', function() {
@@ -21,12 +19,6 @@ directives.directive('keyDown', function() {
         case 38: // up arrow
         case 75: // k
           return scope.$apply(attr.wUp);
-
-        case 85: // U
-          return scope.$apply(attr.wRead);
-
-        case 72: // H
-          return scope.$apply(attr.wStar);
       }
     });
   };

@@ -18,17 +18,17 @@ services.factory('items', ['$http', function($http) {
     selectedIdx: null,
     prevHash: null,
 
-
     /*
     Transform JSON response into Block then into Item
      */
     dataToItem: function(data) {
       var block = {
         hash: data.hash,
-        index: data.index,
+        id: data.block_index,
         prev_hash: data.prev_block,
         bits: data.bits,
         relayed_by: data.relayed_by,
+        height: data.height,
         n_tx: data.n_tx,
         l_tx: {}
       };
@@ -49,23 +49,45 @@ services.factory('items', ['$http', function($http) {
     },
 
     getItemFromLocalStore: function() {
-      if (!items.prevHash) {
-        items.prevHash = '0000000000000003c718e7ef998706e893b1e0e531784ee4ba66b677bbd278b7';
-      }
+      for (var i = 0; i < 1; ++i){
+        // Having issue with asynchronous requests
+        // Going to review
 
-      for (var i = 0; i < 10; ++i){
-        $http.get(items.getLocalUrl(items.prevHash)).then(
-          function(data) {
-            items.all.push(items.dataToItem(data));
-            console.log(data.hash);
-           items.prevHash = data.prev_block;
+        /*$http.get(items.getLocalUrl(items.prevHash)).then(
+          function(response) {
+            items.all.push(items.dataToItem(response.data));
+            console.log(response.data.hash);
+            items.prevHash = response.data.prev_block;
+            console.log(items.prevHash);
           },
           function(data, status) {
             console.log(data, status);
-            break;
+
+          }*/
+        $http.get(items.getLocalUrl('0000000000000002e4607cdf63b538c9dfe92d5fb9b61ced4efed621e8b5e651')).then(
+          function(response) {
+            items.all.push(items.dataToItem(response.data));
+            console.log(response.data.hash);
+            //items.prevHash = response.data.prev_block;
+            //console.log(items.prevHash);
+          });
+        $http.get(items.getLocalUrl('000000000000000380df4545064963c898a30d8c743b15c563d03c1b5d4670b3')).then(
+          function(response) {
+            items.all.push(items.dataToItem(response.data));
+            console.log(response.data.hash);
+            //items.prevHash = response.data.prev_block;
+            //console.log(items.prevHash);
+          });
+        $http.get(items.getLocalUrl('0000000000000005f478a81a12a25b7a562f2f75d1088727aebb1170d4da3cc9')).then(
+          function(response) {
+            items.all.push(items.dataToItem(response.data));
+            console.log(response.data.hash);
+            //items.prevHash = response.data.prev_block;
+            //console.log(items.prevHash);
           }
         );
-      }
+      };
+      items.filtered = items.all;
     },
 
     /*
@@ -157,6 +179,10 @@ services.factory('items', ['$http', function($http) {
   };
 
   //
+  if (!items.prevHash) {
+    items.prevHash = '0000000000000002e4607cdf63b538c9dfe92d5fb9b61ced4efed621e8b5e651';
+  }
+
   items.getItemFromLocalStore();
 
   return items;

@@ -1,4 +1,5 @@
 <!doctype html>
+<html lang="en" ng-app="BEApp" ng-csp>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
@@ -15,8 +16,8 @@
         <link rel="stylesheet" href="styles/bootstrap.css">
         <link rel="stylesheet" href="styles/main.css">
         <!-- endbuild -->
-</head>
-  <body ng-app="BEApp">
+  </head>
+  <body ng-controller="AppController" ng-cloak w-keydown w-space="handleSpace()" w-down="items.next()" w-up="items.prev()">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -35,7 +36,7 @@
               Fancy Blockchain Explorer
             </a>
             <ul class="nav">
-              <li ng-repeat="item in items"><a ng-click="">{{item.length}} {{item.name}}</a></li>
+              <!-- <li ng-repeat="item in items"><a ng-click="">{{item.length}} {{item.name}}</a></li> -->
             </ul>
           </div>
         </div>
@@ -59,21 +60,23 @@
       </section>
 
       <section class="blocks">
-        <form class="navbar-search pull-left" id="blockSearch">
+        <!-- <form class="navbar-search pull-left" id="blockSearch">
           <input type="search" class="search-query" placeholder="Search block">
-        </form>
-        <div ng-repeat="item in items.filtered | filter: search"
+        </form> -->
+        <article ng-repeat="item in items.filtered | filter: searchText"
+              ui-sref="block({block_id: item.id})"
               id="{{item.id}}"
-              ng-class="{active: item.selected}" class="well summary"
-              ng-click="item.selectItem($index)">
+              ng-class="{active: item.selected}" class="well block">
           <div class="row-fluid">
-            <h3>{{item.id}}</h3>
+            <div class="span6 pub-name">
+                Height: {{item.height}}
+            </div>
+            <h3 class="pub-title">{{item.id}}</h3>
           </div>
-        </div>
+        </article>
       </section>
       
-      <section class="entries">
-        <div class="container" ui-view=""></div>
+      <section class="entries" ui-view="">
       </section>
     </section>
 
@@ -127,7 +130,10 @@
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
+        <script src="scripts/directives.js"></script>
+        <script src="scripts/services.js"></script>
+        <script src="scripts/filters.js"></script>
         
         <!-- endbuild -->
-</body>
+  </body>
 </html>
