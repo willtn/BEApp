@@ -1,8 +1,13 @@
-<div class="hero-unit">
-    <h1>Happy New Year!</h1>
-    <p>You now have</p>
-    <ul>
-        <li ng-repeat="transaction in tx">{{transaction}}</li>
-    </ul>
-    <h3>Getting there!</h3>
+<div id="wrapper">
+    <div id="columns">
+        <div class="pin" ng-repeat="trans in tx" ng-cloak ng-click="toogleShowingTx(trans.id)">
+            <h4>{{trans.hash}}</h4>
+            <div ng-show="$parent.showing && ($parent.showingId == trans.id)">
+                <ul>
+                  <li>Size: {{trans.size}}</li>
+                  <li>Relayed by IP: {{trans.relayed_by}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>

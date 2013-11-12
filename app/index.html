@@ -15,6 +15,7 @@
         <!-- build:css(.tmp) styles/main.css -->
         <link rel="stylesheet" href="styles/bootstrap.css">
         <link rel="stylesheet" href="styles/main.css">
+        <link rel="stylesheet" href="styles/component.css">
         <!-- endbuild -->
   </head>
   <body ng-controller="AppController" ng-cloak w-keydown w-space="handleSpace()" w-down="items.next()" w-up="items.prev()">
@@ -80,7 +81,7 @@
       </section>
     </section>
 
-    <div class="modal fade" id="modalAbout">
+    <div class="modal hide fade" id="modalAbout" >
       <div class="modal-header">
         <a class="close" data-dismiss="modal">×</a>
         <h3>About Fancy Blockchain Explorer</h3>
@@ -133,6 +134,7 @@
         <script src="scripts/directives.js"></script>
         <script src="scripts/services.js"></script>
         <script src="scripts/filters.js"></script>
+        <script src="scripts/modernizr.custom.js"></script>
         
         <!-- endbuild -->
   </body>

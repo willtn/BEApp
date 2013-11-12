@@ -34,12 +34,43 @@ services.factory('items', ['$http', function($http) {
       };
 
       data.tx.forEach(function(tx) {
+
         block.l_tx[tx.hash] = {
           hash: tx.hash,
-          index: tx.index,
+          id: tx.tx_index,
           relayed_by: tx.relayed_by,
-          size: tx.size
+          size: tx.size,
+          in: [],
+          out: []
         };
+
+        // Parsing Inputs list.
+        // Using try/catch to handle the case when inputs == [{}]
+        try {
+          var input_list = [];
+          tx.inputs.forEach(function(input) {
+            input_list.push({
+              addr: input.prev_out.addr,
+              n: input.prev_out.n,
+              id: input.prev_out.tx_index,
+              value: input.prev_out.value
+            });
+            block.l_tx[tx.hash].in = input_list;
+          });
+        } catch (err) {
+          console.log(err);
+        }
+
+        // Parsing Out list.
+        tx.out.forEach(function(output) {
+          block.l_tx[tx.hash].out.push({
+            addr: output.addr,
+            n: output.n,
+            value: output.value
+          });
+        });
+
+
       })
       return new Item(block);
     },

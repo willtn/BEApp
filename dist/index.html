@@ -1,4 +1,5 @@
 <!doctype html>
+<html lang="en" ng-app="BEApp" ng-csp="">
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
@@ -11,9 +12,9 @@
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-        <link rel="stylesheet" href="styles/70c8ebf4.main.css">
-</head>
-  <body ng-app="BlockExplorerApp">
+        <link rel="stylesheet" href="styles/142942d7.main.css">
+  </head>
+  <body ng-controller="AppController" ng-cloak="" w-keydown="" w-space="handleSpace()" w-down="items.next()" w-up="items.prev()">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -32,7 +33,7 @@
               Fancy Blockchain Explorer
             </a>
             <ul class="nav">
-              <li ng-repeat="item in items"><a ng-click="">{{item.length}} {{item.name}}</a></li>
+              <!-- <li ng-repeat="item in items"><a ng-click="">{{item.length}} {{item.name}}</a></li> -->
             </ul>
           </div>
         </div>
@@ -56,22 +57,24 @@
       </section>
 
       <section class="blocks">
-        <form class="navbar-search pull-left" id="blockSearch">
+        <!-- <form class="navbar-search pull-left" id="blockSearch">
           <input type="search" class="search-query" placeholder="Search block">
-        </form>
-        <div ng-repeat="item in items.filtered | filter: search" id="{{item.id}}" ng-class="{active: item.selected}" class="well summary" ng-click="item.selectItem($index)">
+        </form> -->
+        <article ng-repeat="item in items.filtered | filter: searchText" ui-sref="block({block_id: item.id})" id="{{item.id}}" ng-class="{active: item.selected}" class="well block">
           <div class="row-fluid">
-            <h3>{{item.id}}</h3>
+            <div class="span6 pub-name">
+                Height: {{item.height}}
+            </div>
+            <h3 class="pub-title">{{item.id}}</h3>
           </div>
-        </div>
+        </article>
       </section>
       
-      <section class="entries">
-        <div class="container" ng-view=""></div>
+      <section class="entries" ui-view="">
       </section>
     </section>
 
-    <div class="modal fade" id="modalAbout">
+    <div class="modal hide fade" id="modalAbout">
       <div class="modal-header">
         <a class="close" data-dismiss="modal">×</a>
         <h3>About Fancy Blockchain Explorer</h3>
@@ -79,9 +82,8 @@
       <div class="modal-body">
         <p class="modal-body-p"><img src="images/9fd8cd12.sadpanda.png" alt="Sad Panda" title="Sad Panda"></p>
         <p class="modal-body-p">Trung Nguyen</p>
-        </div>
       </div>
-    
+    </div>
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
      <script>
        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -95,11 +97,12 @@
 
     <script src="bower_components/jquery/jquery.js"></script>
     <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
 
-        <script src="scripts/76c21dca.plugins.js"></script>
+        <script src="scripts/7e110f8b.plugins.js"></script>
 
         <script src="scripts/6b865daa.modules.js"></script>
 
-        <script src="scripts/80b62067.scripts.js"></script>
-</body>
-</html>
+        <script src="scripts/5823ae49.scripts.js"></script>
+  </body>
+</html></html>

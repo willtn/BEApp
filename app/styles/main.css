@@ -183,86 +183,22 @@ p.modal-body-p {
 }
 
 .entries {
-  padding: 10px;
-  box-sizing: border-box;
-  -webkit-box-flex: 1;
-  overflow-y: scroll;
-  padding-left: 10px;
-  -webkit-overflow-scrolling: touch;
-}
-
-.entries {
     padding: 10px;
     box-sizing: border-box;
-    -webkit-box-flex: 1;
     overflow-y: scroll;
     padding-left: 10px;
     -webkit-overflow-scrolling: touch;
+    -webkit-box-flex: 1;
 }
 
-.entry {
-    -webkit-transition: all 0.5s ease-in-out;
-    box-shadow: 5px 5px 5px rgba(210, 210, 210, 0.6);
+.entries .navbar-inner {
+    top: 0px;
+    left: 0px:
+    position: fixed;
+    display: block;
 }
 
-.entry.read {
-}
 
-.entry.active {
-    border: 0px solid #222;
-}
-
-.entry .pub-date {
-    font-size: 0.9em;
-}
-.entry .actions {
-    text-align: right;
-}
-.entry .title {}
-.entry .author {}
-.entry .pub-name {}
-.entry hr {}
-.entry .post-content {}
-
-.entry .post-content img {
-    margin: 5px;
-}
-
-.entry .actions div, .entry .actions label {
-    display: inline;
-}
-
-.entry .actions input[type=checkbox] {
-    -webkit-appearance: none;
-    -webkit-box-shadow: transparent;
-    border: 0;
-    display: inline-block;
-    font-size: 15px;
-    line-height: 1em;
-    margin: 0 0.25em 0 0;
-    padding: 0;
-    width: 1.25em;
-    height: 1.25em;
-    -webkit-border-radius: 0.25em;
-    vertical-align: text-top;
-    background-image: url("../images/glyphicons-halflings.png");
-}
-
-.entry .actions input[type=checkbox].star {
-    background-position: -144px 0;
-}
-
-.entry .actions input[type=checkbox].star:checked {
-    background-position: -120px 0;
-}
-
-.entry .actions input[type=checkbox].read {
-    background-position: -192px -96px;
-}
-
-.entry .actions input[type=checkbox].read:checked {
-    background-position: -72px -96px
-}
 
 .no-select {
     -webkit-user-select: none;
@@ -276,7 +212,7 @@ p.modal-body-p {
     width: 100%;
     max-width: 1600px;
     min-width: 800px;
-    margin: 50px auto;
+    margin: 5px auto;
 }
 
 #columns {
@@ -301,14 +237,18 @@ p.modal-body-p {
     -moz-column-break-inside: avoid;
     column-break-inside: avoid;
     padding: 15px;
+    padding-top: 10px;
     padding-bottom: 5px;
     background: -webkit-linear-gradient(45deg, #FFF, #F9F9F9);
     opacity: 1;
 
+    max-width: 250px;
     -webkit-transition: all .2s ease;
     -moz-transition: all .2s ease;
     -o-transition: all .2s ease;
     transition: all .2s ease;
+
+
 }
 
 .pin img {
@@ -318,8 +258,11 @@ p.modal-body-p {
     margin-bottom: 5px;
 }
 
-.pin h3 {
-    font-size: 30px;
+.pin h4 {
+    border-bottom: 1px solid #ccc;
+    max-width: 240px;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .pin p {
@@ -344,6 +287,104 @@ p.modal-body-p {
     }
 }
 
-#columns:hover .pin:not(:hover) {
-    opacity: 0.4;
+
+
+*,
+*:after,
+*:before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+/* Clearfix hack by Nicolas Gallagher: http://nicolasgallagher.com/micro-clearfix-hack/ */
+.clearfix:before,
+.clearfix:after {
+    content: " ";
+    display: table;
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+.clearfix {
+    *zoom: 1;
+}
+
+a {
+    color: #555;
+    text-decoration: none;
+}
+
+.container {
+    width: 100%;
+    position: relative;
+}
+
+.container > header {
+    width: 90%;
+    max-width: 1240px;
+    margin: 0 auto;
+    position: relative;
+    padding: 0 30px 50px 30px;
+}
+
+.container > header {
+    padding: 60px 30px 50px;
+    text-align: center;
+}
+
+.container > header h1 {
+    font-size: 34px;
+    line-height: 38px;
+    margin: 0 auto;
+    font-weight: 700;
+    color: #333;
+}
+
+.container > header h1 span {
+    display: block;
+    font-size: 20px;
+    font-weight: 300;
+}
+
+.main > p {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+/* Header Style */
+.codrops-top {
+    line-height: 24px;
+    font-size: 11px;
+    background: #fff;
+    background: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    z-index: 9999;
+    position: relative;
+    box-shadow: 1px 0px 2px rgba(0,0,0,0.2);
+}
+
+.codrops-top a {
+    padding: 0px 10px;
+    letter-spacing: 1px;
+    color: #333;
+    display: inline-block;
+}
+
+.codrops-top a:hover {
+    background: rgba(255,255,255,0.8);
+    color: #000;
+}
+
+.codrops-top span.right {
+    float: right;
+}
+
+.codrops-top span.right a {
+    float: left;
+    display: block;
 }

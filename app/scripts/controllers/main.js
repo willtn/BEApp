@@ -11,19 +11,32 @@ angular.module('BEApp')
 
   .controller('BlockCtrl', function ($scope, $stateParams, items) {
     items.all.forEach(function(item) {
-      if (item.id == $stateParams.block_id) {
+      if (item.id === $stateParams.blockId) {
         $scope.block = item;
       }
     });
+    $scope.blockId = $stateParams.blockId;
     $scope.tx = $scope.block.l_tx;
+    $scope.showingId = null;
+    $scope.showing = false;
+    $scope.toogleShowingTx = function(id) {
+      if ($scope.showingId != id) {
+        $scope.showingId = id;
+        $scope.showing = true;
+      }
+      else {
+        $scope.showingId = null;
+        $scope.showing = false;
+      }
+    };
   })
 
   .controller('TxCtrl', function ($scope) {
     $scope.tx = {
       id : 145698,
       size: 258,
-      relayed_by: "64.179.201.80"
-    }
+      relayed_by: '64.179.201.80'
+    };
   })
 
   .controller('AppController', function ($scope, items, scroll) {
@@ -40,10 +53,11 @@ angular.module('BEApp')
     };
 
     $scope.$watch('items.selectedIdx', function(newVal) {
-      if (newVal !== null) scroll.toCurrent();
+      if (newVal !== null)
+        scroll.toCurrent();
     });
   })
 
-  .controller('NavBarController', function(items) {
+  .controller('NavBarController', function($stateParams, items) {
 
   });

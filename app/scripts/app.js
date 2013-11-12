@@ -5,25 +5,25 @@ var app = angular.module('BEApp', [
     'BEApp.directives',
     'BEApp.filters',
     'BEApp.services'
-]);
+  ]);
 
 app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
-    $urlRouterProvider.otherwise("/");
+    $urlRouterProvider.otherwise('/');
 
     $stateProvider
       .state('main', {
-        url: "/",
+        url: '/',
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
       })
       .state('block',{
-        url: "/block/:block_id",
+        url: '/block/:block_id',
         templateUrl: 'views/block.html',
         controller: 'BlockCtrl'
       })
       .state('tx', {
-        url: "/tx",
-        //url: "/block/:block_id/tx/:tx_id",
+        //url: '/tx',
+        url: '/block/:block_id/tx/:tx_id',
         templateUrl: 'views/tx.html',
         controller: 'TxCtrl'
       });

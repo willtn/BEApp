@@ -1,0 +1,13 @@
+<div id="wrapper">
+    <div id="columns">
+        <div class="pin" ng-repeat="trans in tx" ng-cloak="" ng-click="toogleShowingTx(trans.id)">
+            <h4>{{trans.hash}}</h4>
+            <div ng-show="$parent.showing && ($parent.showingId == trans.id)">
+                <ul>
+                  <li>Size: {{trans.size}}</li>
+                  <li>Relayed by IP: {{trans.relayed_by}}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
