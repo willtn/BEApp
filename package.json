@@ -4,8 +4,7 @@
   "dependencies": {
     "gzippo": "~0.2.0",
     "express": "~3.4.4",
-    "grunt-google-cdn": "~0.2.2",
-    "angular-ui-router": "latest"
+    "grunt-google-cdn": "~0.2.2"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
