@@ -2,14 +2,15 @@
 
 var app = angular.module('BEApp', [
     'ui.router',
-    'BEApp.directives',
-    'BEApp.filters',
+    'ui.keypress',
+    'ui.bootstrap',
     'BEApp.services'
   ]);
 
 app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
     $urlRouterProvider.otherwise('/');
 
+    //TODO: Handling accesses by URLs
     $stateProvider
       .state('main', {
         url: '/',
@@ -21,11 +22,9 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
         templateUrl: 'views/block.html',
         controller: 'BlockCtrl'
       })
-      .state('tx', {
-        //url: '/tx',
-        url: '/block/:block_id/tx/:tx_id',
-        templateUrl: 'views/tx.html',
-        controller: 'TxCtrl'
+      .state('404', {
+        url:'/404',
+        templateUrl: '404.html'
       });
 
     $httpProvider.defaults.useXDomain = true;

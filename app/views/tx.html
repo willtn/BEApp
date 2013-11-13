@@ -1,9 +1,12 @@
-<div class="hero-unit">
-    <h1>'Allo, 'Allo!</h1>
-    <p>You now have</p>
-    <ul>
-        <li ng-repeat="thing in tx">{{thing}}</li>
-    </ul>
-    <p>installed.</p>
-    <h3>Enjoy coding! - Yeoman</h3>
-</div>
+<div class="modal-header">
+    <h3>Transaction {{tx.id}}</h3>
+ </div>
+ <div class="modal-body">
+   <ul>
+     <li>Hash: {{tx.hash}}</li>
+     <li>Relayed by: {{tx.relayed_by}}</li>
+   </ul>
+ </div>
+ <div class="modal-footer">
+   <button class="btn btn-primary" ng-click="ok()">OK</button>
+ </div>

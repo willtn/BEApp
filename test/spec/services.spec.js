@@ -25,7 +25,7 @@ describe('items', function() {
     expect(items.getLocalUrl(20000)).toEqual('/json/blocks/20000.json');
   });
 
-  it('should fetch 3 items', function() {
+  it('should fetch 17 items', function() {
     expect(items.all).toEqual([]);
     expect(items.filtered).toEqual([]);
     expect(items.selected).toEqual(null);
@@ -35,8 +35,8 @@ describe('items', function() {
 
     $httpBackend.flush();
 
-    expect(items.all.length).toEqual(3);
+    expect(items.all.length).toEqual(17);
     expect(items.prevHash).toEqual('00000000000000085a35ba8285555768e488ade52121fbe896f35a06e298f2b3');
-    expect(items.filtered.length).toEqual(3);
+    expect(items.filtered.length).toEqual(17);
   });
 });
