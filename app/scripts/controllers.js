@@ -67,13 +67,11 @@ angular.module('BEApp')
     };
 
     $scope.next = function() {
-      console.log('next');
       items.next();
       $state.go('block', {block_id: items.selected.id});
     };
 
     $scope.prev = function() {
-      console.log('prev')
       items.prev();
       $state.go('block', {block_id: items.selected.id});
     };

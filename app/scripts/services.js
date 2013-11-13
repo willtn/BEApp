@@ -56,11 +56,9 @@ services.factory('items', ['$http', '$state', function($http, $state) {
               id: input.prev_out.tx_index,
               value: input.prev_out.value
             });
-            console.log(input.prev_out.value);
             block.l_tx[tx.tx_index].in = input_list;
           });
         } catch (err) {
-          console.log(err);
         }
 
         // Parsing Out list.
@@ -102,105 +100,93 @@ services.factory('items', ['$http', '$state', function($http, $state) {
         $http.get(items.getLocalUrl('0000000000000002e4607cdf63b538c9dfe92d5fb9b61ced4efed621e8b5e651')).then(
           function(response) {
             items.all.push(items.dataToItem(response.data));
-            console.log(response.data.hash);
           });
         $http.get(items.getLocalUrl('000000000000000380df4545064963c898a30d8c743b15c563d03c1b5d4670b3')).then(
           function(response) {
             items.all.push(items.dataToItem(response.data));
-            console.log(response.data.hash);
           });
         $http.get(items.getLocalUrl('0000000000000005f478a81a12a25b7a562f2f75d1088727aebb1170d4da3cc9')).then(
           function(response) {
             items.all.push(items.dataToItem(response.data));
-            console.log(response.data.hash);
           }
         );
         $http.get(items.getLocalUrl('0000000000000005f7726612dad89f62c60a24ac5b951db84dce1396d9221d93')).then(
           function(response) {
             items.all.push(items.dataToItem(response.data));
-            console.log(response.data.hash);
           }
         );
         $http.get(items.getLocalUrl('00000000000000057cbbe2e6e8c7a170875836cecc7a1ce1e5982a707f68065e')).then(
           function(response) {
             items.all.push(items.dataToItem(response.data));
-            console.log(response.data.hash);
           }
         );
         $http.get(items.getLocalUrl('00000000000000070cefc4b3cea73dd2c9fa19e6572fa533992dcf9f16d5d202')).then(
           function(response) {
             items.all.push(items.dataToItem(response.data));
-            console.log(response.data.hash);
           }
         );
         $http.get(items.getLocalUrl('0000000000000000076f8a07f1ca5affc32fa644fa05c17c06bc68bab705fc90')).then(
           function(response) {
             items.all.push(items.dataToItem(response.data));
-            console.log(response.data.hash);
           }
         );
         $http.get(items.getLocalUrl('00000000000000081a028b7c2c3f468ccd468bc4dbe9a5d62534330700ecdfa4')).then(
           function(response) {
             items.all.push(items.dataToItem(response.data));
-            console.log(response.data.hash);
           }
         );
         $http.get(items.getLocalUrl('00000000000000085a35ba8285555768e488ade52121fbe896f35a06e298f2b3')).then(
           function(response) {
             items.all.push(items.dataToItem(response.data));
-            console.log(response.data.hash);
           }
         );
         $http.get(items.getLocalUrl('0000000000000003c718e7ef998706e893b1e0e531784ee4ba66b677bbd278b7')).then(
           function(response) {
             items.all.push(items.dataToItem(response.data));
-            console.log(response.data.hash);
           }
         );
         $http.get(items.getLocalUrl('000000000000000549a71e9ccc7ef1c47796bccad3113eee91475569369b0223')).then(
           function(response) {
             items.all.push(items.dataToItem(response.data));
-            console.log(response.data.hash);
           }
         );
         $http.get(items.getLocalUrl('000000000000000716cbbdeca6033cbaedeec9776385002d78f07c5f16ce4d55')).then(
           function(response) {
             items.all.push(items.dataToItem(response.data));
-            console.log(response.data.hash);
           }
         );
         $http.get(items.getLocalUrl('00000000000000004601a9a6a517f3bfb0372e9fb1a112fd98207ad2fdbe37eb')).then(
           function(response) {
             items.all.push(items.dataToItem(response.data));
-            console.log(response.data.hash);
           }
         );
         $http.get(items.getLocalUrl('00000000000000067603a70aa2069fe614639d0645a4523c42afab250ce9e942')).then(
           function(response) {
             items.all.push(items.dataToItem(response.data));
-            console.log(response.data.hash);
           }
         );
         $http.get(items.getLocalUrl('00000000000000078287b47235ad1cde6ca6dd5a971c3184e466fc9dfdba2c49')).then(
           function(response) {
             items.all.push(items.dataToItem(response.data));
-            console.log(response.data.hash);
           }
         );
         $http.get(items.getLocalUrl('0000000000000008356228e6f0d6194d97cb263707467432e22f58a5d792422b')).then(
           function(response) {
             items.all.push(items.dataToItem(response.data));
-            console.log(response.data.hash);
           }
         );
         $http.get(items.getLocalUrl('00000000000000053964992c212e5470879e4ea09b2de4f4368202aacface391')).then(
           function(response) {
             items.all.push(items.dataToItem(response.data));
-            console.log(response.data.hash);
           }
         );
       };
       items.filtered = items.all;
+    },
+
+    // For the purpose of infinite scrolling demo
+    loadMore: function() {
+      items.getItemFromLocalStore();
     },
 
     /*
