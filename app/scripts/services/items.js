@@ -6,11 +6,7 @@ function Item(block) {
   angular.extend(this, block);
 }
 
-var services = angular.module('BEApp.services', []);
-
 services.factory('items', ['$http', '$state', function($http, $state) {
-  /*var BLOCK_COUNT_URL = 'http://blockchain.info/q/getblockcount',
-    LATEST_HASH_URL = 'http://blockchain.info/q/latesthash';*/
   //var state = $state;
   var items = {
     all: [],
@@ -97,6 +93,7 @@ services.factory('items', ['$http', '$state', function($http, $state) {
             console.log(data, status);
 
           }*/
+        //delete $http.defaults.headers.common['X-Requested-With'];
         $http.get(items.getLocalUrl('0000000000000002e4607cdf63b538c9dfe92d5fb9b61ced4efed621e8b5e651')).then(
           function(response) {
             items.all.push(items.dataToItem(response.data));
@@ -186,16 +183,16 @@ services.factory('items', ['$http', '$state', function($http, $state) {
 
     // For the purpose of infinite scrolling demo
     loadMore: function() {
-      items.getItemFromLocalStore();
+      //items.getItemFromLocalStore();
     },
 
     /*
     Get the URL to Block Request API
      'http://blockchain.info/rawblock/$block_hash?format=json&cors=true'
      */
-    /*getRemoteUrl: function(hash) {
+    getRemoteUrl: function(hash) {
       return 'http://blockchain.info/rawblock/' + hash + '?format=json&cors=true';
-    },*/
+    },
 
     /*
      Get the latest block from Blockchain
@@ -203,6 +200,9 @@ services.factory('items', ['$http', '$state', function($http, $state) {
      Flush Items
      API Url: http://blockchain.info/latestblock?cors=true
      */
+
+
+
     refreshItems: function() {
       items.all = [];
       items.selected = null;
@@ -303,35 +303,3 @@ services.factory('items', ['$http', '$state', function($http, $state) {
   items.getItemFromLocalStore();
   return items;
 }]);
-
-/**
- * Service that is in charge of scrolling in the app.
- */
-//TODO: still need to rename the DOM objects
-services.factory('scroll', function($timeout) {
-  return {
-    pageDown: function() {
-      var itemHeight = $('.wrapper.active').height() + 60;
-      var winHeight = $(window).height();
-      var curScroll = $('.entries').scrollTop();
-      var scroll = curScroll + winHeight;
-
-      if (scroll < itemHeight) {
-        $('.entries').scrollTop(scroll);
-        return true;
-      }
-
-      // already at the bottom
-      return false;
-    },
-
-    toCurrent: function() {
-      // Need the setTimeout to prevent race condition with item being selected.
-      $timeout(function() {
-        var curScrollPos = $('.blocks').scrollTop();
-        var itemTop = $('.block.active').offset().top - 60;
-        $('.blocks').animate({'scrollTop': curScrollPos + itemTop}, 200);
-      }, 0, false);
-    }
-  };
-});
