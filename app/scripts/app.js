@@ -4,8 +4,9 @@ var app = angular.module('BEApp', [
     'ui.router',
     'ui.keypress',
     'ui.bootstrap',
+    'firebase',
     'BEApp.services',
-    'BEApp.directives'
+    'BEApp.directives',
   ]);
 
 app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
