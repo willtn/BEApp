@@ -2,45 +2,16 @@
  * Created by will on 11/14/13.
  */
 'use strict'
+var bcModule = angular.module('BEApp.bc', []);
 
-services.factory('blockchain', [function () {
+bcModule.config(['$httpProvider', function($httpProvider) {
+  delete $httpProvider.defaults.headers.common["X-Requested-With"];
+}]);
+
+bcModule.factory('blockchain', function ($http, $q, $rootScope) {
   var LATEST_HASH_URL = 'http://blockchain.info/q/latesthash',
     BLOCK_COUNT_URL = 'http://blockchain.info/q/getblockcount',
     BLOCK_HASH_URL = 'http://blockchain.info/rawblock/';
-
-  /**
-   * Retrieving the latest hash in blockchain
-   * URL: http://blockchain.info/q/latesthash
-   * @return {string}
-   * Throw 'Error retrieving the latest hash'
-   */
-  function getLatestHash() {
-    return $http.get(LATEST_HASH_URL).
-      success(function(data) {
-        return data;
-      }).
-      error(function(data, status) {
-        throw 'Error retrieving the latest hash';
-        console.log(status);
-      })
-  }
-
-  /**
-   * Retrieving the latest height in blockchain
-   * URL: http://blockchain.info/q/getblockcount
-   * @returns {string}
-   * Throw 'Error retrieving the latest height'
-   */
-  function getLatestHeight() {
-    return $http.get(BLOCK_COUNT_URL).
-      success(function(data) {
-        return data;
-      }).
-      error(function(data, status) {
-        throw 'Error retrieving the latest height';
-        console.log(status);
-      });
-  }
 
   /**
    * Generate the URL for the given block hash
@@ -49,6 +20,16 @@ services.factory('blockchain', [function () {
    */
   function getHashURL(hash) {
     return BLOCK_HASH_URL + hash + '?format=json&cors=true';
+  }
+
+  function getBlock(hash) {
+    $http.get(getHashURL(hash)).
+      success(function(data) {
+        return dataToBlock(data);
+      }).
+      error(function(data, status) {
+        console.log(status);
+      });
   }
 
   /**
@@ -74,7 +55,7 @@ services.factory('blockchain', [function () {
       block.lTx[tx.tx_index] = {
         hash: tx.hash,
         id: tx.tx_index,
-        relayeBy: tx.relayed_by,
+        relayedBy: tx.relayed_by,
         size: tx.size,
         in: [],
         out: []
@@ -104,14 +85,22 @@ services.factory('blockchain', [function () {
           value: output.value
         });
       });
-
-    return block;
     })
+    return block;
   }
 
   return {
+
+    /**
+     * Get as many blocks as needed to keep up-to-date.
+     * @param currentHash
+     * @param currentHeight
+     * @returns {Array}
+     */
+    // Need to figure out how to do dynamically chain asynchronous requests
     updateBlocks: function(currentHash, currentHeight) {
-      try {
+      var deferred = $q.defer();
+      /*try {
         var latestHash = getLatestHash(),
           latestHeight = getLatestHeight(),
           blocks = [];
@@ -123,7 +112,7 @@ services.factory('blockchain', [function () {
             // Test
             function () { return (count > 0 && rHash != curentHash)},
             function() {
-              rBlock = this.getBlock(rHash);
+              rBlock = getBlock(rHash);
               blocks.push(rBlock);
               rHash = rBlock.prevhash;
             },
@@ -135,18 +124,77 @@ services.factory('blockchain', [function () {
       }
       catch (e) {
         console.log(e);
-      }
-      return [];
+      }*/
+      return deferred.promise;
     },
 
-    getBlock: function(hash) {
+    // Dirty method: nested http requests.
+    /**
+     * Fetch 3 blocks from the given hash
+     * @param hash
+     * @returns {blocks: Array, prevHash: string}
+     */
+    get3Blocks: function(hash) {
+      var result = { blocks: [], prevHash: null},
+        deferred = $q.defer();
+      // First block
       $http.get(getHashURL(hash)).
         success(function(data) {
-          return dataToBlock(data);
-        }).
-        error(function(data, status) {
-          console.log(status);
+          result.blocks.push(dataToBlock(data));
+          // Second block
+          $http.get(getHashURL(data.prev_block)).
+            success(function(data) {
+              result.blocks.push(dataToBlock(data));
+              // Third block
+              $http.get(getHashURL(data.prev_block)).
+                success(function(data) {
+                  result.blocks.push(dataToBlock(data));
+                  result.prevHash = data.prev_block;
+                  deferred.resolve(result);
+                  if (!$rootScope.$$phase)
+                    $rootScope.$apply();
+                })
+            })
         });
+      return deferred.promise;
+    },
+
+    // Dirty method: nested http requests.
+    /**
+     * Fetch the latest hash in the blockchain. Then fetch 3 latest blocks in the blockchain.
+     * @returns { blocks: array, latestHash: string, prevHash: string}
+     */
+    getLatestBlocks: function() {
+      var result = { blocks: [], latestHash: null, prevHash: null},
+        deferred = $q.defer();
+      // Latest hash
+      $http.get(LATEST_HASH_URL).
+        success(function(data) {
+          result.latestHash = data;
+          // First block
+          $http.get(getHashURL(data)).
+            success(function(data) {
+              result.blocks.push(dataToBlock(data));
+              // Second block
+              $http.get(getHashURL(data.prev_block)).
+                success(function(data) {
+                  result.blocks.push(dataToBlock(data));
+                  // Third block
+                  $http.get(getHashURL(data.prev_block)).
+                    success(function(data) {
+                      result.blocks.push(dataToBlock(data));
+                      result.prevHash = data.prev_block;
+                      deferred.resolve(result);
+                      if (!$rootScope.$$phase)
+                        $rootScope.$apply();
+                    })
+                })
+            })
+        });
+
+      return deferred.promise;
     }
+
+
   };
-}]);
+});

@@ -17,7 +17,8 @@ angular.module('BEApp')
   .controller('BlockCtrl', function ($scope, $stateParams, $modal, items) {
     $scope.block_id = $stateParams.block_id;
     $scope.block = items.selected;
-    $scope.tx = $scope.block.l_tx;
+    if ($scope.block)
+      $scope.tx = $scope.block.lTx;
 
     $scope.showingId = null;
     $scope.showing = false;
@@ -34,7 +35,6 @@ angular.module('BEApp')
     };
 
     $scope.modal = function(trans) {
-      console.log(trans);
       $modal.open({
         templateUrl: 'views/tx.html',
         controller: TxCtrl,
@@ -93,21 +93,6 @@ angular.module('BEApp')
 
 var TxCtrl = function($scope, $modalInstance, tx) {
   $scope.tx = tx;
-  /*$scope.totalInput = function() {
-    var totalValue = 0;
-    tx.in.forEach(function(input) {
-      console.log(input.value);
-      totalValue += input.value;
-    });
-    return totalValue;
-  };
-  $scope.totalOutput = function() {
-    var totalValue = 0;
-    tx.out.forEach(function(output) {
-      totalValue += output.value;
-    });
-    return totalValue;
-  };*/
 
   $scope.ok = function () {
     $modalInstance.close();

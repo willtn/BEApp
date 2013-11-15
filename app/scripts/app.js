@@ -7,6 +7,7 @@ var app = angular.module('BEApp', [
     'firebase',
     'BEApp.services',
     'BEApp.directives',
+    'BEApp.bc'
   ]);
 
 app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
@@ -28,7 +29,4 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
         url:'/404',
         templateUrl: '404.html'
       });
-
-    $httpProvider.defaults.useXDomain = true;
-    delete $httpProvider.defaults.headers.common['X-Requested-With'];
   });
