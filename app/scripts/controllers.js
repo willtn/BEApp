@@ -87,7 +87,7 @@ angular.module('BEApp')
     });
   })
 
-  .controller('SideBarCtrl', function($stateParams, items) {
+  .controller('NavBarCtrl', function($stateParams, items) {
 
   });
 
