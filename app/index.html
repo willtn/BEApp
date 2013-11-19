@@ -42,17 +42,17 @@
             <button ng-click="next()" ng-disabled="!items.hasNext()" class="btn" title="Next block"><i class="icon-arrow-down"></i></button>
           </div>
           <div class="bottom">
-              <button ng-click="items.getMoreBlocks()" class="btn" title="More"><i class="icon-plus-sign"></i></button>
+              <button ng-click="items.getMore()" class="btn" title="More"><i class="icon-plus-sign"></i></button>
               <button ng-click="items.refreshItems()" class="btn" title="Refresh"><i class="icon-refresh"></i></button>
           </div>
         </div>
       </section>
 
-      <section class="blocks" infinite-scroll="items.getMoreBlocks()">
+      <section class="blocks" infinite-scroll="items.getMore()">
         <!-- <form class="navbar-search pull-left" id="blockSearch">
           <input type="search" class="search-query" placeholder="Search block">
         </form> -->
-        <article ng-repeat="item in items.filtered | filter: search:strict"
+        <article ng-repeat="item in items.filtered | filter: search:strict | orderBy: item.id"
               id={{$index}}
               ng-class="{active: item.selected}" class="well block"
               ng-click="goTo($index)">

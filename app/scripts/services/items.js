@@ -14,9 +14,13 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
     selectedIdx: null,
     prevHash: null,
     latestHash: null,
+    promise: null,
+    pendingRequest: false,
+    count: 0,
 
     refreshItems: function() {
       items.all = [];
+      items.filter = [];
       items.selected = null;
       items.selectedIdx = null;
       items.initialFetch();
@@ -107,18 +111,32 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
 
     initialFetch: function() {
       items.getLatestBlocks().then(function() {
-        items.getMoreBlocks();
+          items.getMore();
+          items.getMore();
+          items.getMore();
+          items.getMore();
       });
     },
+
+    /*queueRequests: function(func) {
+      if items.promise == null {
+        var deferred = $q.defer();
+
+      }
+      else {
+
+      }
+    },*/
 
     getLatestBlocks: function() {
       var deferred = $q.defer();
       blockchain.getLatestBlocks().then(function(result) {
-        items.all = [];
         items.latestHash = result.latestHash;
         items.prevHash = result.prevHash;
+        //items.lowestHash = result.lowestHash;
         angular.forEach(result.blocks, function(block) {
           var item = new Item(block);
+          //items.all[block.hash] = item;
           items.all.push(item);
           items.all.sort(function(blockA, blockB) {
             return blockA.height < blockB.height;
@@ -133,20 +151,83 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
     },
 
     getMoreBlocks: function() {
-      blockchain.get3Blocks(items.prevHash).then(function(result) {
-        items.prevHash = result.prevHash;
-        var newItems = [];
-        angular.forEach(result.blocks, function(block) {
-          var item = new Item(block);
-          newItems.push(item);
-          newItems.sort(function(blockA, blockB) {
-            return blockA.height < blockB.height;
+      if (items.pendingRequest == false) {
+        items.pendingRequest = true;
+        blockchain.get3Blocks(items.prevHash).then(function(result) {
+          items.prevHash = result.prevHash;
+          //items.lowestHash = result.lowestHash;
+          var newItems = [];
+          angular.forEach(result.blocks, function(block) {
+            var item = new Item(block);
+            //items.all[block.hash] = block;
+            newItems.push(item);
+            newItems.sort(function(blockA, blockB) {
+              return blockA.height < blockB.height;
+            });
           });
+          items.all = items.all.concat(newItems);
+          items.pendingRequest = false;
+          items.filtered = items.all;
+          items.reindexSelectedItem();
         });
-        items.all = items.all.concat(newItems);
-        items.filtered = items.all;
-        items.reindexSelectedItem();
-      });
+      }
+      else {
+        console.log('request pending');
+      }
+    },
+
+    getMore: function() {
+
+      if (items.promise) {
+        var prevPromise = items.promise, deferred = $q.defer();
+        prevPromise.then(function() {
+          //var deferred = $q.defer();
+
+          blockchain.getBlock(items.prevHash).then(function(result) {
+            //var newItems = [];
+            items.prevHash = result.prevHash;
+            /*angular.forEach(result.blocks, function(block) {
+              var item = new Item(block);
+              //items.all[block.hash] = block;
+              newItems.push(item);
+              newItems.sort(function(blockA, blockB) {
+                return blockA.height < blockB.height;
+              });
+            });
+            items.all = items.all.concat(newItems);
+            items.pendingRequest = false;*/
+            items.all.push(new Item(result.block));
+            items.filtered = items.all;
+            items.reindexSelectedItem();
+            deferred.resolve(true);
+          });
+
+        });
+        items.promise = deferred.promise;
+      }
+      else {
+        var deferred = $q.defer();
+          items.count++;
+          console.log(items.count);
+        blockchain.getBlock(items.prevHash).then(function(result) {
+          //var newItems = [];
+          items.prevHash = result.prevHash;
+          /*angular.forEach(result.blocks, function(block) {
+            var item = new Item(block);
+            newItems.push(item);
+            newItems.sort(function(blockA, blockB) {
+              return blockA.height < blockB.height;
+            });
+          });
+          items.all = items.all.concat(newItems);
+          items.pendingRequest = false;*/
+          items.all.push(new Item(result.block));
+          items.filtered = items.all;
+          items.reindexSelectedItem();
+          deferred.resolve(true);
+        });
+        items.promise = deferred.promise;
+      }
     }
 
   };

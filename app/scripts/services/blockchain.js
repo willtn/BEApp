@@ -150,11 +150,23 @@ bcModule.factory('blockchain', function ($http, $q, $rootScope) {
                 success(function(data) {
                   result.blocks.push(dataToBlock(data));
                   result.prevHash = data.prev_block;
+                  //result.lowestHash = data.hash;
                   deferred.resolve(result);
                   if (!$rootScope.$$phase)
                     $rootScope.$apply();
                 })
             })
+        });
+      return deferred.promise;
+    },
+
+    getBlock: function(hash) {
+      var deferred = $q.defer();
+      $http.get(getHashURL(hash)).
+        success(function(data) {
+          deferred.resolve({block: dataToBlock(data), prevHash: data.prev_block});
+          if (!$rootScope.$$phase)
+            $rootScope.$apply();
         });
       return deferred.promise;
     },
@@ -184,6 +196,7 @@ bcModule.factory('blockchain', function ($http, $q, $rootScope) {
                     success(function(data) {
                       result.blocks.push(dataToBlock(data));
                       result.prevHash = data.prev_block;
+                      //result.lowestHash = data.hash;
                       deferred.resolve(result);
                       if (!$rootScope.$$phase)
                         $rootScope.$apply();
