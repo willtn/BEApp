@@ -2,7 +2,6 @@
 
 function Item(block) {
   this.selected = false;
-
   angular.extend(this, block);
 }
 
@@ -15,7 +14,6 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
     prevHash: null,
     latestHash: null,
     promise: null,
-    pendingRequest: false,
     count: 0,
 
     refreshItems: function() {
@@ -109,41 +107,19 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
       }
     },
 
-    initialFetch: function() {
-      items.getLatestBlocks().then(function() {
-          items.getMore();
-          items.getMore();
-          items.getMore();
-          items.getMore();
-      });
-    },
-
-    /*queueRequests: function(func) {
-      if items.promise == null {
-        var deferred = $q.defer();
-
-      }
-      else {
-
-      }
-    },*/
-
     getLatestBlocks: function() {
       var deferred = $q.defer();
       blockchain.getLatestBlocks().then(function(result) {
         items.latestHash = result.latestHash;
         items.prevHash = result.prevHash;
-        //items.lowestHash = result.lowestHash;
         angular.forEach(result.blocks, function(block) {
           var item = new Item(block);
-          //items.all[block.hash] = item;
           items.all.push(item);
           items.all.sort(function(blockA, blockB) {
             return blockA.height < blockB.height;
           });
         });
         items.filtered = items.all;
-        //console.log(items.all);
         items.reindexSelectedItem();
         deferred.resolve(true);
       });
@@ -155,11 +131,9 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
         items.pendingRequest = true;
         blockchain.get3Blocks(items.prevHash).then(function(result) {
           items.prevHash = result.prevHash;
-          //items.lowestHash = result.lowestHash;
           var newItems = [];
           angular.forEach(result.blocks, function(block) {
             var item = new Item(block);
-            //items.all[block.hash] = block;
             newItems.push(item);
             newItems.sort(function(blockA, blockB) {
               return blockA.height < blockB.height;
@@ -177,60 +151,42 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
     },
 
     getMore: function() {
-
+      function handleResponse(response) {
+        items.prevHash = response.prevHash;
+        items.all.push(new Item(response.block));
+        items.filtered = items.all;
+        items.reindexSelectedItem();
+      };
+      
+      var deferred = $q.defer();
       if (items.promise) {
-        var prevPromise = items.promise, deferred = $q.defer();
+        var prevPromise = items.promise;
         prevPromise.then(function() {
-          //var deferred = $q.defer();
-
           blockchain.getBlock(items.prevHash).then(function(result) {
-            //var newItems = [];
-            items.prevHash = result.prevHash;
-            /*angular.forEach(result.blocks, function(block) {
-              var item = new Item(block);
-              //items.all[block.hash] = block;
-              newItems.push(item);
-              newItems.sort(function(blockA, blockB) {
-                return blockA.height < blockB.height;
-              });
-            });
-            items.all = items.all.concat(newItems);
-            items.pendingRequest = false;*/
-            items.all.push(new Item(result.block));
-            items.filtered = items.all;
-            items.reindexSelectedItem();
+            handleResponse(result);
             deferred.resolve(true);
           });
-
         });
-        items.promise = deferred.promise;
       }
       else {
-        var deferred = $q.defer();
-          items.count++;
-          console.log(items.count);
         blockchain.getBlock(items.prevHash).then(function(result) {
-          //var newItems = [];
-          items.prevHash = result.prevHash;
-          /*angular.forEach(result.blocks, function(block) {
-            var item = new Item(block);
-            newItems.push(item);
-            newItems.sort(function(blockA, blockB) {
-              return blockA.height < blockB.height;
-            });
-          });
-          items.all = items.all.concat(newItems);
-          items.pendingRequest = false;*/
-          items.all.push(new Item(result.block));
-          items.filtered = items.all;
-          items.reindexSelectedItem();
+          handleResponse(result);
           deferred.resolve(true);
         });
-        items.promise = deferred.promise;
       }
-    }
+      items.promise = deferred.promise;
+    },
 
+    initialFetch: function() {
+      items.getLatestBlocks().then(function() {
+        items.getMore();
+        items.getMore();
+        items.getMore();
+        items.getMore();
+      });
+    }
   };
+
   items.initialFetch();
   return items;
 }]);

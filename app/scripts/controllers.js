@@ -12,8 +12,6 @@ angular.module('BEApp')
     ];
   })
 
-
-
   .controller('BlockCtrl', function ($scope, $stateParams, $modal, items) {
     $scope.block_id = $stateParams.block_id;
     $scope.block = items.selected;
@@ -45,8 +43,6 @@ angular.module('BEApp')
       );
     }
   })
-
-
 
   .controller('AppController', function ($scope, $stateParams, $state, items, scroll) {
     $scope.items = items;
@@ -85,15 +81,10 @@ angular.module('BEApp')
     $scope.$watch('items.selectedIdx', function(newVal) {
       if (newVal !== null) scroll.toCurrent();
     });
-  })
-
-  .controller('NavBarCtrl', function($stateParams, items) {
-
   });
 
 var TxCtrl = function($scope, $modalInstance, tx) {
   $scope.tx = tx;
-
   $scope.ok = function () {
     $modalInstance.close();
   };
