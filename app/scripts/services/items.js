@@ -8,7 +8,7 @@ function Item(block) {
 services.factory('items', ['$http', 'blockchain', '$q', function($http, blockchain, $q) {
   var items = {
     all: [],
-    filtered: [],
+    //filtered: [],
     selected: null,
     selectedIdx: null,
     prevHash: null,
@@ -18,7 +18,7 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
 
     refreshItems: function() {
       items.all = [];
-      items.filter = [];
+      //items.filtered = [];
       items.selected = null;
       items.selectedIdx = null;
       items.initialFetch();
@@ -56,7 +56,8 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
       if (!items.selected) {
         return true;
       }
-      return items.selectedIdx < items.filtered.length - 1;
+      return items.selectedIdx < items.all.length - 1;
+      //return items.selectedIdx < items.filtered.length - 1;
     },
 
     // Select a block by its index
@@ -65,7 +66,8 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
         items.selected.selected = false;
       }
 
-      items.selected = items.filtered[idx];
+      //items.selected = items.filtered[idx];
+      items.selected = items.all[idx];
       items.selectedIdx = idx;
       items.selected.selected = true;
     },
@@ -89,9 +91,9 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
     clearFilter: function(){
       items.filtered = items.all;
       items.reindexSelectedItem();
-    },*/
+    },
 
-    reindexSelectedItem: function() {
+    /*reindexSelectedItem: function() {
       if (items.selected) {
         var idx = items.filtered.indexOf(items.selected);
 
@@ -105,7 +107,7 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
           items.selected.selected = true;
         }
       }
-    },
+    },*/
 
     getLatestBlocks: function() {
       var deferred = $q.defer();
@@ -115,12 +117,12 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
         angular.forEach(result.blocks, function(block) {
           var item = new Item(block);
           items.all.push(item);
-          items.all.sort(function(blockA, blockB) {
-            return blockA.height < blockB.height;
-          });
         });
-        items.filtered = items.all;
-        items.reindexSelectedItem();
+        //items.filtered = items.all;
+        //items.reindexSelectedItem();
+        items.all.sort(function(blockA, blockB) {
+          return blockA.height < blockB.height;
+        });
         deferred.resolve(true);
       });
       return deferred.promise;
@@ -135,14 +137,13 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
           angular.forEach(result.blocks, function(block) {
             var item = new Item(block);
             newItems.push(item);
-            newItems.sort(function(blockA, blockB) {
-              return blockA.height < blockB.height;
-            });
+          });
+          newItems.sort(function(blockA, blockB) {
+            return blockA.height < blockB.height;
           });
           items.all = items.all.concat(newItems);
-          items.pendingRequest = false;
-          items.filtered = items.all;
-          items.reindexSelectedItem();
+          //items.filtered = items.all;
+          //items.reindexSelectedItem();
         });
       }
       else {
@@ -154,10 +155,10 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
       function handleResponse(response) {
         items.prevHash = response.prevHash;
         items.all.push(new Item(response.block));
-        items.filtered = items.all;
-        items.reindexSelectedItem();
+        //items.filtered = items.all;
+        //items.reindexSelectedItem();
       };
-      
+
       var deferred = $q.defer();
       if (items.promise) {
         var prevPromise = items.promise;

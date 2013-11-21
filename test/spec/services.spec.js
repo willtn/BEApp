@@ -21,22 +21,4 @@ describe('items', function() {
     items = _items_;
   }));
 
-  it('should give the url to the block at height 20000', function() {
-    expect(items.getLocalUrl(20000)).toEqual('/json/blocks/20000.json');
-  });
-
-  it('should fetch 17 items', function() {
-    expect(items.all).toEqual([]);
-    expect(items.filtered).toEqual([]);
-    expect(items.selected).toEqual(null);
-    expect(items.selectedIdx).toEqual(null);
-    expect(items.prevHash).toEqual('0000000000000002e4607cdf63b538c9dfe92d5fb9b61ced4efed621e8b5e651');
-    expect(items.all.length).toEqual(0);
-
-    $httpBackend.flush();
-
-    expect(items.all.length).toEqual(17);
-    expect(items.prevHash).toEqual('00000000000000085a35ba8285555768e488ade52121fbe896f35a06e298f2b3');
-    expect(items.filtered.length).toEqual(17);
-  });
 });

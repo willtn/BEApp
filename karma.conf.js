@@ -14,16 +14,11 @@ module.exports = function(config) {
       'app/bower_components/angular/angular.js',
       'app/bower_components/angular-ui-router/release/angular-ui-router.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
-      'app/bower_components/angular-resource/angular-resource.js',
-      'app/bower_components/angular-cookies/angular-cookies.js',
-      'app/bower_components/angular-sanitize/angular-sanitize.js',
       'app/bower_components/jquery/jquery.js',
       'app/scripts/*.js',
       'app/scripts/**/*.js',
-      'test/mock/**/*.js',
       'test/spec/*.js',
       'test/spec/**/*.js',
-      { pattern: 'test/mock/blocks/*.json', watched: true, served: true, included: false }
     ],
 
     // list of files / patterns to exclude
@@ -38,7 +33,7 @@ module.exports = function(config) {
 
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: false,
+    autoWatch: true,
 
 
     // Start these browsers, currently available:

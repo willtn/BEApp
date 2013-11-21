@@ -52,7 +52,7 @@
         <!-- <form class="navbar-search pull-left" id="blockSearch">
           <input type="search" class="search-query" placeholder="Search block">
         </form> -->
-        <article ng-repeat="item in items.filtered | filter: search:strict | orderBy: item.id"
+        <article ng-repeat="item in items.all | filter: search:strict | orderBy: item.id"
               id={{$index}}
               ng-class="{active: item.selected}" class="well block"
               ng-click="goTo($index)">
