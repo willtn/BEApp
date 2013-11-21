@@ -1,7 +1,9 @@
 <div class="hero-unit">
   <h1>Bitcoin Statistics</h1>
-  <p>According to <a href="http://blockchain.info/stats">Blockchain.info</a>,
-        <editable-text ng-repeat="stat in awesomeStats" value="{{stat}}">{{stat}}</editable-text>
+  <p>According to <a href="http://blockchain.info/stats">Blockchain.info</a>,       
+        <ul>
+        	<li ng-repeat="stat in awesomeStats">{{stat}}</li>
+        </ul>
   </p>
     <div align="center" id="btc-quote"></div>
 </div>
