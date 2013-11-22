@@ -128,7 +128,7 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
       return deferred.promise;
     },
 
-    getMoreBlocks: function() {
+    /*getMoreBlocks: function() {
       if (items.pendingRequest == false) {
         items.pendingRequest = true;
         blockchain.get3Blocks(items.prevHash).then(function(result) {
@@ -149,7 +149,7 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
       else {
         console.log('request pending');
       }
-    },
+    },*/
 
     getMore: function() {
       function handleResponse(response) {

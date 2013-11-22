@@ -1,0 +1,11 @@
+<div class="expand-pin">
+  <h4 ng-click="toogleExpand()"> {{header}} </h4>
+  <div ng-show="expandOn">
+    <ul>
+      <li ng-repeat="attr in attrList">
+          {{attr}}: <editable-text ng-model="obj[attr]"></editable-text>
+      </li>
+    </ul>
+    <button ng-click="toogleExpand()">Close</button>
+  </div>
+</div>

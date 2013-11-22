@@ -1,8 +1,6 @@
-<div class="editable-text">
-    <a ng-show="readOnly">
-        {{value}}
-    </a>
-    <div ng-hide="readOnly">
-        <input ng-model="value">
-    </div>
+<div class="editable-text-view" ng-show="readOnly" ng-dblclick="toogleEdit()">
+  {{value}}
+</div>
+<div class="editable-text-edit" ng-hide="readOnly" ng-dblclick="toogleEdit()">
+  <input class="noBorder" ng-model="value">
 </div>

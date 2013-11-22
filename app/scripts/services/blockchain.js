@@ -10,7 +10,6 @@ bcModule.config(['$httpProvider', function($httpProvider) {
 
 bcModule.factory('blockchain', function ($http, $q, $rootScope) {
   var LATEST_HASH_URL = 'http://blockchain.info/q/latesthash',
-    BLOCK_COUNT_URL = 'http://blockchain.info/q/getblockcount',
     BLOCK_HASH_URL = 'http://blockchain.info/rawblock/';
 
   /**
@@ -22,7 +21,7 @@ bcModule.factory('blockchain', function ($http, $q, $rootScope) {
     return BLOCK_HASH_URL + hash + '?format=json&cors=true';
   }
 
-  function getBlock(hash) {
+  /*function getBlock(hash) {
     $http.get(getHashURL(hash)).
       success(function(data) {
         return dataToBlock(data);
@@ -30,7 +29,7 @@ bcModule.factory('blockchain', function ($http, $q, $rootScope) {
       error(function(data, status) {
         console.log(status);
       });
-  }
+  }*/
 
   /**
    * Transform requested data into a block
@@ -57,13 +56,13 @@ bcModule.factory('blockchain', function ($http, $q, $rootScope) {
         id: tx.tx_index,
         relayedBy: tx.relayed_by,
         size: tx.size,
-        in: [],
-        out: []
+        in: tx.vin_sz,
+        out: tx.vout_sz
       };
 
       // Parsing Inputs list.
       // Using try/catch to handle the case when inputs == [{}]
-      try {
+      /*try {
         var input_list = [];
         tx.inputs.forEach(function(input) {
           input_list.push({
@@ -75,16 +74,16 @@ bcModule.factory('blockchain', function ($http, $q, $rootScope) {
           block.lTx[tx.tx_index].in = input_list;
         });
       } catch (err) {
-      }
+      }*/
 
       // Parsing Out list.
-      tx.out.forEach(function(output) {
+      /*tx.out.forEach(function(output) {
         block.lTx[tx.tx_index].out.push({
           addr: output.addr,
           n: output.n,
           value: output.value
         });
-      });
+      });*/
     })
     return block;
   }
@@ -134,7 +133,7 @@ bcModule.factory('blockchain', function ($http, $q, $rootScope) {
      * @param hash
      * @returns {blocks: Array, prevHash: string}
      */
-    get3Blocks: function(hash) {
+    /*get3Blocks: function(hash) {
       var result = { blocks: [], prevHash: null},
         deferred = $q.defer();
       // First block
@@ -158,7 +157,7 @@ bcModule.factory('blockchain', function ($http, $q, $rootScope) {
             })
         });
       return deferred.promise;
-    },
+    },*/
 
     getBlock: function(hash) {
       var deferred = $q.defer();

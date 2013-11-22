@@ -228,7 +228,7 @@ p.modal-body-p {
     column-fill: auto;
 }
 
-.pin {
+.expand-pin {
     display: inline-block;
     background: #FEFEFE;
     border: 2px solid #FAFAFA;
@@ -251,21 +251,27 @@ p.modal-body-p {
 
 }
 
-.pin input {
+.expand-pin input {
     border: none;
     border-bottom-width: 1px;
     background-color: transparent;
     outline: none;
 }
 
-.pin h4 {
+.expand-pin input:focus
+{
+    border-style: solid;
+    border-color: black;
+}
+
+.expand-pin h4 {
     border-bottom: 1px solid #ccc;
     max-width: 450px;
     text-overflow: ellipsis;
     overflow: hidden;
 }
 
-.pin p {
+.expand-pin p {
     font: 12px/18px Arial, sans-serif;
     color: #333;
     margin: 0;

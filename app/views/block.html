@@ -1,3 +1,4 @@
+<!-- Old template
 <div id="wrapper">
     <div id="columns">
         <div class="pin" ng-repeat="trans in tx" ng-cloak ng-click="toogleShowingTx(trans.id)">
@@ -10,5 +11,11 @@
                 <p ng-click="$parent.modal(trans)" style="text-align: right"><a>See more...</a></p>
             </div>
         </div>
+    </div>
+</div>
+ -->
+<div id="wrapper">
+    <div id="columns">
+        <expand-pin ng-repeat="trans in tx" ng-cloak obj="trans" header="trans.hash" style=""></expand-pin>
     </div>
 </div>

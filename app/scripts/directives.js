@@ -14,47 +14,51 @@ directives.directive('infiniteScroll', function() {
   };
 });
 
+/**
+ * <expand-pin obj="obj" header="obj.header"></expand-pin>
+ */
 directives.directive('expandPin', function() {
+  return {
+    restrict: 'E',
+    scope: {
+      obj: "=",
+      header: "="
+    },
+    templateUrl: 'views/expand-pin.html',
+    link: function(scope, elm) {
+      scope.expandOn = false;
 
+      scope.toogleExpand = function() {
+        scope.expandOn = !scope.expandOn;
+      };
+
+      scope.attrList = [];
+      for (var attr in scope.obj) {
+        if (scope.obj.hasOwnProperty(attr) && attr != 'hash' && attr != '$$hashKey') {
+          scope.attrList.push(attr);
+        }
+      };
+    }
+  };
 });
 
+/**
+ * <editable-text ng-model="value"></editable-text>
+ */
 directives.directive('editableText', function() {
   return {
-    link: function(scope, elm, attr) {
+    link: function(scope, elm) {
       scope.readOnly = true;
 
-      var clickable = elm.find('a'),
-        input = elm.find('input');
-
-      clickable.bind('click', function() {
-        scope.readOnly = false;
-        scope.$apply();
-        input[0].focus();
-      });
-
-      input.bind('blur', function() {
-        scope.readOnly = true;
-        scope.apply();
-      });
+      var input = elm.find('input');
+      scope.toogleEdit = function() {
+        scope.readOnly = !scope.readOnly;
+      };
     },
-    replace: true,
-    transclude: true,
     restrict: 'E',
     templateUrl: 'views/editable-text.html',
-    /**
-     * <editable-text value="value"></editable-text>
-     * template:
-     *   <div class="editable-text">
-     *     <a ng-show="readOnly">
-     *       {{value}}
-     *     </a>
-     *     <div ng-hide="readOnly">
-     *       <input ng-model="value">
-     *     </div>
-     *   </div>
-     */
     scope: {
-      value: "@"
+      value: "=ngModel"
     }
   };
 });
