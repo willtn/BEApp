@@ -5,7 +5,7 @@ function Item(block) {
   angular.extend(this, block);
 }
 
-services.factory('items', ['$http', 'blockchain', '$q', function($http, blockchain, $q) {
+services.factory('items', ['$http', 'bcQuery', '$q', function($http, bcQuery, $q) {
   var items = {
     all: [],
     //filtered: [],
@@ -111,7 +111,7 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
 
     getLatestBlocks: function() {
       var deferred = $q.defer();
-      blockchain.getLatestBlocks().then(function(result) {
+      bcQuery.getLatestBlocks().then(function(result) {
         items.latestHash = result.latestHash;
         items.prevHash = result.prevHash;
         angular.forEach(result.blocks, function(block) {
@@ -131,7 +131,7 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
     /*getMoreBlocks: function() {
       if (items.pendingRequest == false) {
         items.pendingRequest = true;
-        blockchain.get3Blocks(items.prevHash).then(function(result) {
+        bcQuery.get3Blocks(items.prevHash).then(function(result) {
           items.prevHash = result.prevHash;
           var newItems = [];
           angular.forEach(result.blocks, function(block) {
@@ -163,14 +163,14 @@ services.factory('items', ['$http', 'blockchain', '$q', function($http, blockcha
       if (items.promise) {
         var prevPromise = items.promise;
         prevPromise.then(function() {
-          blockchain.getBlock(items.prevHash).then(function(result) {
+          bcQuery.getBlock(items.prevHash).then(function(result) {
             handleResponse(result);
             deferred.resolve(true);
           });
         });
       }
       else {
-        blockchain.getBlock(items.prevHash).then(function(result) {
+        bcQuery.getBlock(items.prevHash).then(function(result) {
           handleResponse(result);
           deferred.resolve(true);
         });

@@ -8,7 +8,7 @@ bcModule.config(['$httpProvider', function($httpProvider) {
   delete $httpProvider.defaults.headers.common["X-Requested-With"];
 }]);
 
-bcModule.factory('blockchain', function ($http, $q, $rootScope) {
+bcModule.factory('bcQuery', function ($http, $q, $rootScope) {
   var LATEST_HASH_URL = 'http://blockchain.info/q/latesthash',
     BLOCK_HASH_URL = 'http://blockchain.info/rawblock/';
 
@@ -208,5 +208,48 @@ bcModule.factory('blockchain', function ($http, $q, $rootScope) {
     }
 
 
+  };
+});
+
+bcModule.factory('bcWebsocket', function() {
+  var ws = new WebSocket('ws://ws.blockchain.info/inv'),
+    observerCallbacks = [];
+
+  ws.onopen = function() {
+    console.log('Socket has been opened!');
+    // Sending messages to subscribe to the channels
+    // New blocks: {"op": "blocks_sub"}
+    // Debugging purpose: {"op":"ping_block"}
+    ws.send('{"op":"ping_block"}');
+  };
+
+  ws.onerror = function(err) {
+    console.log('Websocket error: ', err);
+  };
+
+  ws.onmessage = function(message) {
+    listener(JSON.parse(message.data));
+  };
+
+  /**
+   * Message listener
+   * Notifying all observers by calling their callbacks
+   * @param data
+   */
+  function listener(data) {
+    console.log('Received data from the websocket: ', data);
+    angular.forEach(observerCallbacks, function(callback) {
+      callback(data);
+    });
+  }
+
+  return {
+    /**
+     * Storing observers' callbacks in observerCallbacks
+     * @param callback
+     */
+    registerCallback: function(callback) {
+      observerCallbacks.push(callback);
+    }
   };
 });
