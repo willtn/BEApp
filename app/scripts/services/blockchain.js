@@ -21,16 +21,6 @@ bcModule.factory('bcQuery', function ($http, $q, $rootScope) {
     return BLOCK_HASH_URL + hash + '?format=json&cors=true';
   }
 
-  /*function getBlock(hash) {
-    $http.get(getHashURL(hash)).
-      success(function(data) {
-        return dataToBlock(data);
-      }).
-      error(function(data, status) {
-        console.log(status);
-      });
-  }*/
-
   /**
    * Transform requested data into a block
    * @param data
@@ -40,10 +30,12 @@ bcModule.factory('bcQuery', function ($http, $q, $rootScope) {
     var block = {
       hash: data.hash,
       id: data.block_index,
-      prevHash: data.prev_block,
+      //prevHash: data.prev_block,
+      //size: data.size,
       bits: data.bits,
-      relayedBy: data.relayed_by,
+      //relayedBy: data.relayed_by,
       height: data.height,
+      time: data.time,
       nTx: data.n_tx,
       lTx: {}
     };
@@ -51,14 +43,7 @@ bcModule.factory('bcQuery', function ($http, $q, $rootScope) {
     // Parsing transactions in this block
     data.tx.forEach(function(tx) {
 
-      block.lTx[tx.tx_index] = {
-        hash: tx.hash,
-        id: tx.tx_index,
-        relayedBy: tx.relayed_by,
-        size: tx.size,
-        in: tx.vin_sz,
-        out: tx.vout_sz
-      };
+      block.lTx[tx.tx_index] = {}
 
       // Parsing Inputs list.
       // Using try/catch to handle the case when inputs == [{}]
@@ -89,76 +74,6 @@ bcModule.factory('bcQuery', function ($http, $q, $rootScope) {
   }
 
   return {
-
-    /**
-     * Get as many blocks as needed to keep up-to-date.
-     * @param currentHash
-     * @param currentHeight
-     * @returns {Array}
-     */
-    // Need to figure out how to do dynamically chain asynchronous requests
-    updateBlocks: function(currentHash, currentHeight) {
-      var deferred = $q.defer();
-      /*try {
-        var latestHash = getLatestHash(),
-          latestHeight = getLatestHeight(),
-          blocks = [];
-        if (latestHash !== currentHash && latestHeight !== currentHeight)  {
-          var count = latestHeight - currentHeight,
-            rHash = latestHash,
-            rBlock = null;
-          async.whilst(
-            // Test
-            function () { return (count > 0 && rHash != curentHash)},
-            function() {
-              rBlock = getBlock(rHash);
-              blocks.push(rBlock);
-              rHash = rBlock.prevhash;
-            },
-            function() { return blocks;}
-          );
-        } else {
-          throw 'Hash and height are out of sync.';
-        }
-      }
-      catch (e) {
-        console.log(e);
-      }*/
-      return deferred.promise;
-    },
-
-    // Dirty method: nested http requests.
-    /**
-     * Fetch 3 blocks from the given hash
-     * @param hash
-     * @returns {blocks: Array, prevHash: string}
-     */
-    /*get3Blocks: function(hash) {
-      var result = { blocks: [], prevHash: null},
-        deferred = $q.defer();
-      // First block
-      $http.get(getHashURL(hash)).
-        success(function(data) {
-          result.blocks.push(dataToBlock(data));
-          // Second block
-          $http.get(getHashURL(data.prev_block)).
-            success(function(data) {
-              result.blocks.push(dataToBlock(data));
-              // Third block
-              $http.get(getHashURL(data.prev_block)).
-                success(function(data) {
-                  result.blocks.push(dataToBlock(data));
-                  result.prevHash = data.prev_block;
-                  //result.lowestHash = data.hash;
-                  deferred.resolve(result);
-                  if (!$rootScope.$$phase)
-                    $rootScope.$apply();
-                })
-            })
-        });
-      return deferred.promise;
-    },*/
-
     getBlock: function(hash) {
       var deferred = $q.defer();
       $http.get(getHashURL(hash)).
@@ -238,9 +153,36 @@ bcModule.factory('bcWebsocket', function() {
    */
   function listener(data) {
     console.log('Received data from the websocket: ', data);
-    angular.forEach(observerCallbacks, function(callback) {
-      callback(data);
-    });
+    if (data.op != 'block') {
+      console.log('Received a wrong type of message: ', data.op);
+    }
+    else {
+      angular.forEach(observerCallbacks, function(callback) {
+        callback(dataToBlock(data));
+      });
+    }
+  }
+
+  function dataToBlock(data) {
+    var block = {
+      hash: data.x.hash,
+      id: data.x.blockIndex,
+      //prevHash: data.prev_block,
+      bits: data.x.bits,
+      //relayedBy: data.relayed_by,
+      height: data.x.height,
+      time: data.x.time,
+      nTx: data.x.nTx,
+      lTx: {}
+    };
+
+    // Parsing transactions in this block
+    // No details of the transactions included in the message
+    data.x.txIndexes.forEach(function(tx) {
+      block.lTx[tx] = {}
+    })
+
+    return block;
   }
 
   return {

@@ -128,6 +128,10 @@ services.factory('items', ['$http', 'bcQuery', '$q', function($http, bcQuery, $q
       return deferred.promise;
     },
 
+    updateLatestBlocks: function(data) {
+
+    },
+
     /*getMoreBlocks: function() {
       if (items.pendingRequest == false) {
         items.pendingRequest = true;

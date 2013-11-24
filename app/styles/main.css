@@ -242,6 +242,7 @@ p.modal-body-p {
     padding-bottom: 5px;
     background: -webkit-linear-gradient(45deg, #FFF, #F9F9F9);
     opacity: 1;
+    width: 450px;
 
     -webkit-transition: all .2s ease;
     -moz-transition: all .2s ease;
@@ -266,7 +267,6 @@ p.modal-body-p {
 
 .expand-pin h4 {
     border-bottom: 1px solid #ccc;
-    max-width: 450px;
     text-overflow: ellipsis;
     overflow: hidden;
 }
