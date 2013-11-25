@@ -5,7 +5,7 @@ function Item(block) {
   angular.extend(this, block);
 }
 
-services.factory('items', ['$http', 'bcQuery', '$q', function($http, bcQuery, $q) {
+services.factory('items', ['$http', 'bcQuery', 'bcWebsocket', '$q', function($http, bcQuery, bcWebsocket, $q) {
   var items = {
     all: [],
     //filtered: [],
@@ -14,7 +14,6 @@ services.factory('items', ['$http', 'bcQuery', '$q', function($http, bcQuery, $q
     prevHash: null,
     latestHash: null,
     promise: null,
-    count: 0,
 
     refreshItems: function() {
       items.all = [];
@@ -112,6 +111,7 @@ services.factory('items', ['$http', 'bcQuery', '$q', function($http, bcQuery, $q
     getLatestBlocks: function() {
       var deferred = $q.defer();
       bcQuery.getLatestBlocks().then(function(result) {
+        if (!items.latestHash == result.latestHash)
         items.latestHash = result.latestHash;
         items.prevHash = result.prevHash;
         angular.forEach(result.blocks, function(block) {
@@ -128,8 +128,17 @@ services.factory('items', ['$http', 'bcQuery', '$q', function($http, bcQuery, $q
       return deferred.promise;
     },
 
-    updateLatestBlocks: function(data) {
+    openWsListener: function() {
+      function handleResponse(block) {
+        if (block.id > items.all[0].id) {
+          items.latestHash = block.hash;
+          items.all.unshift(new Item(block));
+          console.log('This just got pushed in :', block);
+        }
+      }
 
+      bcWebsocket.registerCallback(handleResponse);
+      bcWebsocket.subscribeToBlock();
     },
 
     /*getMoreBlocks: function() {
@@ -182,8 +191,24 @@ services.factory('items', ['$http', 'bcQuery', '$q', function($http, bcQuery, $q
       items.promise = deferred.promise;
     },
 
+    getTransaction: function(transId) {
+      var deferred = $q.defer();
+      bcQuery.getTrans(transId).then(function(trans) {
+        if (items.selected.lTx.hasOwnProperty(transId)) {
+          items.selected.lTx[transId] = trans;
+        }
+        else {
+          console.log('The currently selected block does not contain this transaction ', items.selected, transId);
+        }
+        deferred.resolve(true);
+      });
+      return deferred.promise;
+    },
+
     initialFetch: function() {
       items.getLatestBlocks().then(function() {
+        console.log(items.all);
+        items.openWsListener();
         items.getMore();
         items.getMore();
         items.getMore();

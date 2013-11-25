@@ -10,7 +10,8 @@ bcModule.config(['$httpProvider', function($httpProvider) {
 
 bcModule.factory('bcQuery', function ($http, $q, $rootScope) {
   var LATEST_HASH_URL = 'http://blockchain.info/q/latesthash',
-    BLOCK_HASH_URL = 'http://blockchain.info/rawblock/';
+    BLOCK_HASH_URL = 'http://blockchain.info/rawblock/',
+    TRANS_ID_URL = 'http://blockchain.info/rawtx/';
 
   /**
    * Generate the URL for the given block hash
@@ -19,6 +20,15 @@ bcModule.factory('bcQuery', function ($http, $q, $rootScope) {
    */
   function getHashURL(hash) {
     return BLOCK_HASH_URL + hash + '?format=json&cors=true';
+  }
+
+  /**
+   * Generate the URL for the given transaction id
+   * @param data
+   * @returns {string}
+   */
+  function getTransUrl(id) {
+    return TRANS_ID_URL + id + '?format=json&cors=true';
   }
 
   /**
@@ -43,7 +53,7 @@ bcModule.factory('bcQuery', function ($http, $q, $rootScope) {
     // Parsing transactions in this block
     data.tx.forEach(function(tx) {
 
-      block.lTx[tx.tx_index] = {}
+      block.lTx[tx.tx_index] = {id: tx.tx_index}
 
       // Parsing Inputs list.
       // Using try/catch to handle the case when inputs == [{}]
@@ -73,14 +83,35 @@ bcModule.factory('bcQuery', function ($http, $q, $rootScope) {
     return block;
   }
 
+  /**
+   * Transform requested data into a transaction
+   * @param data
+   * @returns transaction
+   */
+  function dataToTrans(data) {
+    return {
+      id: data.tx_index,
+      hash: data.hash,
+      relayedBy: data.relayed_by,
+      size: data.size,
+      time: data.time,
+      in: data.vin_sz,
+      out: data.vout_sz
+    }
+  }
+
   return {
+    /**
+     * Request the block corresponding to the given hash
+     * @param hash
+     * @returns {promise|*}
+     */
     getBlock: function(hash) {
       var deferred = $q.defer();
       $http.get(getHashURL(hash)).
         success(function(data) {
+          console.log('Received block data: ', data);
           deferred.resolve({block: dataToBlock(data), prevHash: data.prev_block});
-          if (!$rootScope.$$phase)
-            $rootScope.$apply();
         });
       return deferred.promise;
     },
@@ -112,30 +143,37 @@ bcModule.factory('bcQuery', function ($http, $q, $rootScope) {
                       result.prevHash = data.prev_block;
                       //result.lowestHash = data.hash;
                       deferred.resolve(result);
-                      if (!$rootScope.$$phase)
-                        $rootScope.$apply();
                     })
                 })
             })
         });
 
       return deferred.promise;
+    },
+
+    /**
+     * Request the transaction corresponding to the given transaction index
+     * @param id
+     * @returns {promise|*}
+     */
+    getTrans: function(id) {
+      var deferred = $q.defer();
+      $http.get(getTransUrl(id)).
+        success(function(data) {
+          console.log('Received transaction data: ', data);
+          deferred.resolve(dataToTrans(data));
+        });
+      return deferred.promise;
     }
-
-
   };
 });
 
-bcModule.factory('bcWebsocket', function() {
+bcModule.factory('bcWebsocket', ['$rootScope', function($rootScope) {
   var ws = new WebSocket('ws://ws.blockchain.info/inv'),
     observerCallbacks = [];
 
   ws.onopen = function() {
-    console.log('Socket has been opened!');
-    // Sending messages to subscribe to the channels
-    // New blocks: {"op": "blocks_sub"}
-    // Debugging purpose: {"op":"ping_block"}
-    ws.send('{"op":"ping_block"}');
+    console.log('Socket has been opened! No subscription yet!');
   };
 
   ws.onerror = function(err) {
@@ -144,6 +182,10 @@ bcModule.factory('bcWebsocket', function() {
 
   ws.onmessage = function(message) {
     listener(JSON.parse(message.data));
+  };
+
+  ws.onclose = function() {
+    console.log('Socket has been closed!');
   };
 
   /**
@@ -157,12 +199,18 @@ bcModule.factory('bcWebsocket', function() {
       console.log('Received a wrong type of message: ', data.op);
     }
     else {
+      console.log('Received a block message');
       angular.forEach(observerCallbacks, function(callback) {
-        callback(dataToBlock(data));
+        $rootScope.$apply(callback(dataToBlock(data)));
       });
     }
   }
 
+  /**
+   * Transform requested data into a block
+   * @param data
+   * @returns block
+   */
   function dataToBlock(data) {
     var block = {
       hash: data.x.hash,
@@ -179,7 +227,7 @@ bcModule.factory('bcWebsocket', function() {
     // Parsing transactions in this block
     // No details of the transactions included in the message
     data.x.txIndexes.forEach(function(tx) {
-      block.lTx[tx] = {}
+      block.lTx[tx] = {id: tx}
     })
 
     return block;
@@ -192,6 +240,21 @@ bcModule.factory('bcWebsocket', function() {
      */
     registerCallback: function(callback) {
       observerCallbacks.push(callback);
+    },
+
+    subscribeToDemo: function() {
+      ws.send('{"op":"ping_block"}');
+      ws.send('{"op":"unconfirmed_sub"}');
+      console.log('Subscribed to Demo');
+    },
+
+    subscribeToBlock: function() {
+      // Subscription for new blocks
+      ws.send('{"op": "blocks_sub"}');
+      // Subscription for new transactions, mostly to keep the connection opened
+      ws.send('{"op":"unconfirmed_sub"}');
+      //ws.send('{"op":"unconfirmed_sub"}');
+      console.log('Subscribed to Block')
     }
   };
-});
+}]);

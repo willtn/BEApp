@@ -18,30 +18,9 @@ angular.module('BEApp')
     if ($scope.block)
       $scope.tx = $scope.block.lTx;
 
-    $scope.showingId = null;
-    $scope.showing = false;
-
-    $scope.toogleShowingTx = function(id) {
-      if ($scope.showingId != id) {
-        $scope.showingId = id;
-        $scope.showing = true;
-      }
-      else {
-        $scope.showingId = null;
-        $scope.showing = false;
-      }
+    $scope.showing = {
+      showingId: null
     };
-
-    $scope.modal = function(trans) {
-      $modal.open({
-        templateUrl: 'views/tx.html',
-        controller: TxCtrl,
-        resolve: {
-          tx: function () {return trans;}
-          }
-        }
-      );
-    }
   })
 
   .controller('AppController', function ($scope, $stateParams, $state, items, scroll) {
@@ -82,10 +61,3 @@ angular.module('BEApp')
       if (newVal !== null) scroll.toCurrent();
     });
   });
-
-var TxCtrl = function($scope, $modalInstance, tx) {
-  $scope.tx = tx;
-  $scope.ok = function () {
-    $modalInstance.close();
-  };
-}
