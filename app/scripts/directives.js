@@ -62,9 +62,9 @@ directives.directive('expandPin', function(items) {
           scope.expandOn = !scope.expandOn;
         }
         else {
-          console.log('Fetch called', transId, items.selected.lTx[transId]);
+          console.log('expandPin fetch called', transId, items.selected.lTx[transId]);
           items.getTransaction(transId).then(function() {
-            console.log('Fetched finished', items.selected.lTx[transId]);
+            console.log('expandPin fetched finished', items.selected.lTx[transId]);
             scope.fetched = true;
             scope.showing.showingId = transId;
           });

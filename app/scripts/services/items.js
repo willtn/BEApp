@@ -219,7 +219,6 @@ services.factory('items', ['$http', 'bcQuery', 'bcWebsocket', '$q', function($ht
 
     initialFetch: function() {
       items.getLatestBlocks().then(function() {
-        console.log(items.all);
         items.openWsListener();
         items.getMore();
         items.getMore();
