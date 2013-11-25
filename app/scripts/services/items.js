@@ -1,4 +1,5 @@
 'use strict';
+var services = angular.module('BEApp.services', ['firebase']);
 
 function Item(block) {
   this.selected = false;
@@ -128,6 +129,9 @@ services.factory('items', ['$http', 'bcQuery', 'bcWebsocket', '$q', function($ht
       return deferred.promise;
     },
 
+    /**
+     * Fire up the websocket listener
+     */
     openWsListener: function() {
       function handleResponse(block) {
         if (block.id > items.all[0].id) {
@@ -164,6 +168,9 @@ services.factory('items', ['$http', 'bcQuery', 'bcWebsocket', '$q', function($ht
       }
     },*/
 
+    /**
+     * Get another block in the blockchain
+     */
     getMore: function() {
       function handleResponse(response) {
         items.prevHash = response.prevHash;
@@ -191,6 +198,11 @@ services.factory('items', ['$http', 'bcQuery', 'bcWebsocket', '$q', function($ht
       items.promise = deferred.promise;
     },
 
+    /**
+     * Get data of the specified transaction
+     * @param transId
+     * @returns {promise|*}
+     */
     getTransaction: function(transId) {
       var deferred = $q.defer();
       bcQuery.getTrans(transId).then(function(trans) {

@@ -27,7 +27,6 @@ directives.directive('expandPin', function(items) {
     },
     templateUrl: 'views/expand-pin.html',
     link: function(scope, elm) {
-      console.log('link function called');
       if (scope.showing.showingId == scope.obj.id)
         scope.expandOn = true;
       else

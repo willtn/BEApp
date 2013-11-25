@@ -3,9 +3,9 @@
   <div ng-show="expandOn">
     <ul>
       <li ng-repeat="attr in attrList">
-        {{attr}}: <editable-text ng-model="obj[attr]"></editable-text>
+          <p>{{attr}}: <editable-text ng-model="obj[attr]"></editable-text></p>
       </li>
     </ul>
-    <button ng-click="toogleExpand()">Close</button>
+    <button style="float: right" ng-click="toogleExpand()">Close</button>
   </div>
 </div>

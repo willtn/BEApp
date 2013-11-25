@@ -243,7 +243,6 @@ p.modal-body-p {
     background: -webkit-linear-gradient(45deg, #FFF, #F9F9F9);
     opacity: 1;
     width: 450px;
-
     -webkit-transition: all .2s ease;
     -moz-transition: all .2s ease;
     -o-transition: all .2s ease;
@@ -275,6 +274,10 @@ p.modal-body-p {
     font: 12px/18px Arial, sans-serif;
     color: #333;
     margin: 0;
+}
+
+.expand-pin-attr {
+    float: left;
 }
 
 @media (min-width: 1000px) {

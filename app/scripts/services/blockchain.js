@@ -194,9 +194,8 @@ bcModule.factory('bcWebsocket', ['$rootScope', function($rootScope) {
    * @param data
    */
   function listener(data) {
-    console.log('Received data from the websocket: ', data);
     if (data.op != 'block') {
-      console.log('Received a wrong type of message: ', data.op);
+      console.log('Received a wrong type of message: ', data, data.op);
     }
     else {
       console.log('Received a block message');
