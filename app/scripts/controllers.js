@@ -26,6 +26,11 @@ angular.module('BEApp')
   .controller('AppController', function ($scope, $stateParams, $state, items, scroll) {
     $scope.items = items;
 
+    $scope.refresh = function() {
+      items.refresh();
+      $state.go('main');
+    }
+
     $scope.goTo = function(id) {
       items.selectItem(id);
       $state.go('block', {block_id: items.selected.id});
