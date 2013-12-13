@@ -27,8 +27,9 @@ angular.module('BEApp')
     $scope.items = items;
 
     $scope.refresh = function() {
-      items.refresh();
       $state.go('main');
+      items.refreshItems();
+      
     }
 
     $scope.goTo = function(id) {
