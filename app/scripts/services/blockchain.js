@@ -1,7 +1,8 @@
 /**
  * Created by will on 11/14/13.
  */
-'use strict'
+define(['angular'], function(angular) {
+  'use strict'
 var bcModule = angular.module('BEApp.bc', []);
 
 bcModule.config(['$httpProvider', function($httpProvider) {
@@ -257,3 +258,4 @@ bcModule.factory('bcWebsocket', ['$rootScope', function($rootScope) {
     }
   };
 }]);
+});
